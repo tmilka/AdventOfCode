@@ -1,4 +1,8 @@
-Game 1: 7 blue, 5 red; 10 red, 7 blue; 5 blue, 4 green, 15 red; 4 green, 6 red, 7 blue; 5 green, 8 blue, 4 red; 5 red, 4 blue, 3 green
+import re
+
+input_counts = {'red': 12, 'blue': 14, 'green': 13}
+
+input = """Game 1: 7 blue, 5 red; 10 red, 7 blue; 5 blue, 4 green, 15 red; 4 green, 6 red, 7 blue; 5 green, 8 blue, 4 red; 5 red, 4 blue, 3 green
 Game 2: 8 green, 3 red; 7 blue, 6 red, 8 green; 7 blue, 3 green, 6 red; 8 green, 6 blue, 11 red; 6 blue, 3 green, 12 red
 Game 3: 6 blue, 3 red, 7 green; 3 red, 3 green, 8 blue; 8 blue, 11 red, 4 green; 5 blue, 7 red, 6 green; 9 blue, 7 green, 1 red
 Game 4: 3 red, 4 green; 5 red, 1 blue; 2 green; 3 green, 1 blue; 2 green, 1 blue, 1 red
@@ -97,4 +101,45 @@ Game 96: 4 red, 4 blue, 4 green; 5 blue, 5 green, 4 red; 2 red, 8 blue; 16 red, 
 Game 97: 6 red, 13 green, 3 blue; 10 green, 4 blue; 3 red, 12 green, 4 blue; 3 red, 5 blue, 16 green; 3 red, 9 green, 1 blue
 Game 98: 8 red, 12 green, 2 blue; 7 green, 8 red, 1 blue; 2 blue, 6 red, 3 green; 9 red, 1 blue, 4 green
 Game 99: 6 blue, 11 red, 7 green; 9 red, 6 green, 1 blue; 9 red, 2 blue
-Game 100: 1 red, 4 blue, 2 green; 6 red, 2 green, 11 blue; 1 red, 1 blue, 2 green; 1 red, 7 blue
+Game 100: 1 red, 4 blue, 2 green; 6 red, 2 green, 11 blue; 1 red, 1 blue, 2 green; 1 red, 7 blue"""
+
+def parse_games(input_string):
+    games = []
+
+    # Split the input into individual games
+    game_strings = re.split(r'Game \d+:', input_string)[1:]
+
+    for game_str in game_strings:
+        game_dict = {'red': 0, 'blue': 0, 'green': 0}
+
+        # Extract color and number pairs using regex
+        color_number_pairs = re.findall(r'(\d+)\s*([a-zA-Z]+)', game_str)
+
+        for number, color in color_number_pairs:
+            game_dict[color.lower()] += int(number)
+
+        games.append(game_dict)
+
+    return games
+
+matching_items = []
+
+###############################################################################################################################
+#prepare input string to list
+data = parse_games(input)
+
+#get the values for each game
+for game_number, item in enumerate(data, start=1):
+    if all(item[color] <= input_counts[color] for color in ['red', 'blue', 'green']):
+        matching_items.append({'Game': game_number, 'Data': item})
+
+print("Matching items:", matching_items)
+
+#################################################################################################################################
+#extract the "Game" values in a new list "game_values"
+game_values = [item['Game'] for item in matching_items]
+
+# Sum the 'Game' values
+sum_of_game_values = sum(game_values)
+
+print("Sum of 'Game' values:", sum_of_game_values)
