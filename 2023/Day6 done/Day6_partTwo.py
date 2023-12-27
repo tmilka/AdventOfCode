@@ -1,5 +1,5 @@
 # Read data from the file
-with open('2023/input.txt', 'r') as file:
+with open('2023\Day6 done\input.txt', 'r') as file:
     lines = file.readlines()
 
 data = {}

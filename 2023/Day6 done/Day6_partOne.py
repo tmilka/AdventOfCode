@@ -17,7 +17,7 @@ for line in lines:
 
 for category, numbers in data.items():
     print(f"{category}: {numbers}")
-
+ 
 
 time_list = data["Time"]
 distance_list = data["Distance"]
