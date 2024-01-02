@@ -1,74 +1,70 @@
-"""
-five of a kind
-
-four of a kind
-
-full house
-
-three of a kind
-
-two pair 
-
-one pair 
-
-high card
-
-
-other case both have the same rank 
-the one with the first highest card wins
-until there is a winner
-
-"""
-strenght_ofCards = {"A": 13, "K": 12, "Q": 11, "J": 10, "T": 9, "9": 8, "8": 7, "7": 6, "6": 5, "5": 4, "4": 3, "3": 2, "2": 1}
-
-def rank_value(hand_rank):
-    ranks_order = {'Five of a kind': 1, 'Four of a kind': 2, 'Full house': 3,
-                   'Three of a kind': 4, 'Two pair': 5, 'One pair': 6, 'High card': 7}
-    
-    return ranks_order[hand_rank[0]]
-
-def get_hand_rank(hand):
-    # Count occurrences of each card
-    card_counts = {}
-    for card in hand:
-        if card in card_counts:
-            card_counts[card] += 1
-        else:
-            card_counts[card] = 1
-
-    # Sort card counts in descending order
-    sorted_counts = sorted(card_counts.values(), reverse=True)
-
-    print(sorted_counts)
-
-    if sorted_counts[0] == 5:
-        return 'Five of a kind'
-    elif sorted_counts[0] == 4:
-        return 'Four of a kind'
-    elif sorted_counts[0] == 3 and sorted_counts[1] == 2:
-        return 'Full house'
-    elif sorted_counts[0] == 3:
-        return 'Three of a kind'
-    elif sorted_counts[0] == 2 and sorted_counts[1] == 2:
-        return 'Two pair'
-    elif sorted_counts[0] == 2:
-        return 'One pair'
+def CheckforEnd(instruction):
+    if instruction == "ZZZ":
+        return True
     else:
-        return 'High card'
+        return False
 
 # Read data from the file
-with open('2023\Day7\input.txt', 'r') as file:
+with open('2023\Day7\input1.txt', 'r') as file:
+    instructions = file.readline().strip()
+    emptyLine = file.readline() #empty line gets stored in a var to avoid
     lines = file.readlines()
 
-split_list = []
-hands = []
+#prep instructions
+letters = list(instructions)
+print("prep instructions")
+print(letters)
 
-# seperate cards and bets in two list
+#prep directions
+data = {}
+
 for line in lines:
-    split_list = line.split()
+    cleanLine = line.strip()
+    parts = cleanLine.split("=")
 
-    hands.append((list(split_list[0]),list(split_list[1])))
+    last = parts[0].strip()
+    nextMove = parts[1].strip()
 
-for hand in hands:
-    get_hand_rank(hand)
-    print(hand)
+    nextMove = nextMove.replace('(', '')
+    nextMove = nextMove.replace(')', '')
+    
+    nextMove = nextMove.split(",")
+    nextMove[1] = nextMove[1].strip()
+    data[last] = nextMove
+
+for last, nextMove in data.items():
+    print(f"{last}: {nextMove}")
+
+#######################################################
+# get start value
+
+#lastInstruction, startValues = next(iter(data.items()))
+#print(lastInstruction)
+lastInstruction = "AAA"
+counter = 0 #kept track of the amount of instructions
+end = False
+
+def simDirections(letters, data, counter, end, lastInstruction):
+
+    for instruction in letters: #instruction R/L
+        NextInstrution = data[lastInstruction]
+        counter += 1
+        if instruction == "L":
+            #take data on left side
+            lastInstruction = NextInstrution[0]
+            if CheckforEnd(lastInstruction):
+                end = True
+                break
+        else:
+            lastInstruction = NextInstrution[1]
+            if CheckforEnd(lastInstruction):
+                end = True
+                break
+    return counter, lastInstruction, end
+
+while end == False:
+    counter, lastInstruction, end = simDirections(letters, data, counter, end, lastInstruction)
+    print(counter)
+    print(end)
+
+print(counter)
